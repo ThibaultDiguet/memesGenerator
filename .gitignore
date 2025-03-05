@@ -19,3 +19,4 @@ logs/
 # IDE specific files
 .vscode/
 .idea/
+.s3/meme-generator-bucket
