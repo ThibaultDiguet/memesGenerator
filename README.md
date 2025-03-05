@@ -25,3 +25,7 @@ This command:
 - Automatically restarts the service when changes are detected
 
 The API will be available at `http://localhost:3000` by default.
+
+## Informations
+
+You can launch interface located in index.html to have à GUI to create meme instead using postman.

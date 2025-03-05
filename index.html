@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Mêmes</title>
+</head>
+<body>
+    <h1>Générateur de Mêmes</h1>
+
+    <form id="memeForm">
+        <label for="topText">Texte du haut :</label>
+        <input type="text" id="topText" name="topText"><br><br>
+
+        <label for="bottomText">Texte du bas :</label>
+        <input type="text" id="bottomText" name="bottomText"><br><br>
+        
+        <label for="topColor">Couleur du haut :</label>
+
+        <div style="display: flex;align-items: center;">
+            <input type="color" id="topColor" name="topColor" value="#ffffff" required
+            oninput="document.getElementById('topColorBox').style.backgroundColor = this.value;">
+            <span id="topColorBox" style="display:inline-block; width:20px; height:20px; border:1px solid #ccc; vertical-align: middle; margin-left:10px;"></span>
+        </div>
+        
+        <br><br>
+
+        <label for="bottomColor">Couleur du bas :</label>
+        <div style="display: flex;align-items: center;">
+            <input type="color" id="bottomColor" name="bottomColor" value="#ffffff" required
+            oninput="document.getElementById('bottomColorBox').style.backgroundColor = this.value;">
+            <span id="bottomColorBox" style="display:inline-block; width:20px; height:20px; border:1px solid #ccc; vertical-align: middle; margin-left:10px;"></span>
+        </div>
+        <br><br>
+
+        <label for="image">Sélectionner une image :</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+        <button type="submit">Générer le Même</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="color"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #result img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+
+    <script>
+        document.getElementById('memeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Récupérer les valeurs du formulaire
+            const topText = document.getElementById('topText').value;
+            const bottomText = document.getElementById('bottomText').value;
+            const topColor = document.getElementById('topColor').value;
+            const bottomColor = document.getElementById('bottomColor').value;
+            const image = document.getElementById('image').files[0];
+
+            if (!image) {
+                alert('Veuillez sélectionner une image');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('topText', topText);
+            formData.append('bottomText', bottomText);
+            formData.append('topColor', topColor);
+            formData.append('bottomColor', bottomColor);
+            formData.append('image', image);
+            fetch('http://localhost:3000/dev/meme', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    <h2>Même Généré :</h2>
+                    <img src="${data.url}" alt="Même généré" style="max-width: 100%; height: auto;" />
+                    <br><br>
+                    <a href="${data.url}" download="meme.png">Télécharger le Même</a>
+                `;
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -24,12 +24,14 @@ exports.generateMeme = async (event) => {
   const contentType = event.headers["content-type"] || event.headers["Content-Type"];
   const busboy = Busboy({ headers: { "content-type": contentType } });
 
-  let topText, bottomText, imageBuffer;
+  let topText, bottomText, topColor, bottomColor, imageBuffer;
 
   const parsePromise = new Promise((resolve, reject) => {
     busboy.on("field", (fieldname, val) => {
       if (fieldname === "topText") topText = val;
       if (fieldname === "bottomText") bottomText = val;
+      if (fieldname === "topColor") topColor = val;
+      if (fieldname === "bottomColor") bottomColor = val;
     });
 
     busboy.on("file", (fieldname, file) => {
@@ -58,15 +60,15 @@ exports.generateMeme = async (event) => {
 
   const id = uuidv4();
 
-  const createTextOverlay = (text) => `
+  const createTextOverlay = (text, color) => `
     <svg width="500" height="100">
-      <text x="50%" y="50%" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      <text x="50%" y="50%" font-size="40" fill="${color || 'white'}" text-anchor="middle" dominant-baseline="middle">${text}</text>
     </svg>`;
 
   const memeBuffer = await sharp(imageBuffer)
     .composite([
-      { input: Buffer.from(createTextOverlay(topText)), gravity: "north" },
-      { input: Buffer.from(createTextOverlay(bottomText)), gravity: "south" },
+      { input: Buffer.from(createTextOverlay(topText, topColor)), gravity: "north" },
+      { input: Buffer.from(createTextOverlay(bottomText, bottomColor)), gravity: "south" },
     ])
     .toBuffer();
 
