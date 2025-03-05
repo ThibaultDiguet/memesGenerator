@@ -1,0 +1,54 @@
+service: meme-generator
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+  region: us-east-1
+  environment:
+    BUCKET_NAME: meme-generator-bucket
+
+functions:
+  generateMeme:
+    handler: handler.generateMeme
+    events:
+      - http:
+          path: meme
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                proxy: true
+            template:
+              multipart/form-data: |
+                #set($allParams = $input.params())
+                {
+                  "body": "$util.base64Encode($input.body)",
+                  "isBase64Encoded": true,
+                  "headers": {
+                    #foreach($param in $allParams.header.keySet())
+                      "$param": "$util.escapeJavaScript($allParams.header.get($param))"
+                      #if($foreach.hasNext),#end
+                    #end
+                  }
+                }
+
+resources:
+  Resources:
+    MemeBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.BUCKET_NAME}
+
+plugins:
+  - serverless-offline
+  - serverless-s3-local
+
+custom:
+  s3:
+    host: localhost
+    port: 4569 
+    directory: .s3
+    buckets:
+      - meme-generator-bucket

@@ -1,0 +1,27 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "<!-- title: 'AWS NodeJS Example' description: 'This template demonstrates how to deploy a simple NodeJS function running on AWS Lambda using the Serverless Framework.' layout: Doc framework: v4 platform: AWS language: nodeJS priority: 1 authorLink: 'https://github.com/serverless' authorName: 'Serverless, Inc.' authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4' -->",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serverless offline start --reloadHandler"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "busboy": "^1.6.0",
+    "multiparty": "^4.2.3",
+    "sharp": "^0.33.5",
+    "streamifier": "^0.1.1",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "serverless-dynamodb": "^0.2.56",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^14.4.0",
+    "serverless-s3-local": "^0.8.5"
+  }
+}
