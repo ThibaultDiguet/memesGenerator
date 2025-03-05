@@ -122,7 +122,7 @@ exports.generateMeme = async (event) => {
 
   const createTextOverlay = (text, color) => `
     <svg width="500" height="150">
-      <text x="50%" y="50%" font-size="90" fill="${color || 'white'}" style="font-family: 'Poppins', sans-serif;" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      <text x="50%" y="50%" font-size="90" stroke="black" stroke-width="3" fill="${color || 'white'}" style="font-family: 'Poppins', sans-serif" text-anchor="middle" dominant-baseline="middle">${text}</text>
     </svg>`;
 
   const memeBuffer = await sharp(imageBuffer)
