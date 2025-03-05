@@ -9,6 +9,18 @@ provider:
     BUCKET_NAME: meme-generator-bucket
 
 functions:
+  getIndex:
+    handler: handler.getIndex
+    events:
+      - http:
+          path: /
+          method: get
+  listMemes:
+    handler: handler.listMemes
+    events:
+      - http:
+          path: memes
+          method: get
   generateMeme:
     handler: handler.generateMeme
     events:
